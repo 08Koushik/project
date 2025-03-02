@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f8f8;
+            padding: 20px;
+            background-image: url("https://static.vecteezy.com/system/resources/previews/008/710/516/original/seamless-pattern-with-cute-fast-food-cartoon-background-vector.jpg");
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            width: 90%;
+        }
+        button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e64a19;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        .recipe-card {
+            background: #fff;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
+        }
+        .recipe-card img {
+            width: 100%;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🍽 Recipe Finder</h2>
+        <input type="text" id="searchBox" placeholder="Enter dish name...">
+        <button id="searchBtn">Search</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const recipes = [
+            { 
+                name: "Pasta", 
+                ingredients: "Pasta, Tomato Sauce, Cheese, veggies", 
+                image: "https://images.alphacoders.com/130/thumb-1920-1308370.jpg" 
+            },
+            { 
+                name: "Omelette", 
+                ingredients: "Eggs, Salt, Butter", 
+                image: "https://creedmoorcafe.com/wp-content/uploads/2018/01/ThinkstockPhotos-485040276-1310x868.jpg" 
+            },
+            { 
+                name: "Grilled Chicken", 
+                ingredients: "Chicken, Spices, Olive Oil", 
+                image: "http://www.simplyscratch.com/wp-content/uploads/2012/06/grilled-chicken.jpg" 
+            },
+            { 
+                name: "Maggi", 
+                ingredients: "Instant Noodles, Water, Spices", 
+                image: "http://i.huffpost.com/gen/2962794/images/o-MAGGI-NOODLES-facebook.jpg" 
+            },
+            { 
+                name: "Sandwich", 
+                ingredients: "Bread, Butter, Vegetables, Cheese", 
+                image: "https://i.pinimg.com/originals/20/1a/e7/201ae78646acb5b75252634593d04397.jpg" 
+            }
+        ];
+
+        document.getElementById("searchBtn").addEventListener("click", function() {
+            let searchQuery = document.getElementById("searchBox").value.toLowerCase().trim();
+            let resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = ""; // Clear previous results
+
+            if (searchQuery === "") {
+                resultDiv.innerHTML = "<p>Please enter a recipe name.</p>";
+                return;
+            }
+
+            let foundRecipes = recipes.filter(recipe => recipe.name.toLowerCase().includes(searchQuery));
+
+            if (foundRecipes.length > 0) {
+                foundRecipes.forEach(recipe => {
+                    let recipeCard = document.createElement("div");
+                    recipeCard.classList.add("recipe-card");
+                    recipeCard.innerHTML = `
+                        <h3>${recipe.name}</h3>
+                        <img src="${recipe.image}" alt="${recipe.name}">
+                        <p><strong>Ingredients:</strong> ${recipe.ingredients}</p>
+                    `;
+                    resultDiv.appendChild(recipeCard);
+                });
+            } else {
+                resultDiv.innerHTML = "<p>No recipes found. Try another search.</p>";
+            }
+        });
+    </script>
+</body>
+</html>

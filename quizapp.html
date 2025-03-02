@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 20px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            overflow: hidden;
+        }
+        #welcome {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://t4.ftcdn.net/jpg/02/31/67/27/360_F_231672799_eKT4LVsU3H4tB1ijPuGi2BwEqMVdHN2l.jpg') no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 24px;
+            z-index: 1000;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        #startBtn {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #ffcc00;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        #startBtn:hover {
+            background: #ffaa00;
+        }
+        #quiz {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 2px 2px 12px rgba(0,0,0,0.2);
+            display: none;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        .option {
+            display: block;
+            margin: 10px;
+            padding: 12px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .option:hover {
+            background: #ffcc00;
+            color: black;
+        }
+        .correct {
+            background: #28a745 !important;
+            color: white;
+        }
+        .wrong {
+            background: #dc3545 !important;
+            color: white;
+        }
+        #next {
+            margin-top: 15px;
+            padding: 12px 25px;
+            background: #ffcc00;
+            color: black;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: none;
+        }
+        #next:hover {
+            background: #ffaa00;
+        }
+        #result {
+            font-size: 24px;
+            font-weight: bold;
+            display: none;
+            animation: fadeIn 1s ease-in-out;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 2px 2px 12px rgba(0,0,0,0.2);
+        }
+        .celebration {
+            font-size: 30px;
+            color: gold;
+            text-shadow: 2px 2px 10px #ffcc00;
+        }
+        .confetti {
+            font-size: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div id="welcome">
+        <h1>Welcome to the Ultimate Quiz Challenge!</h1>
+        <p>Test your knowledge and see how many questions you can get right. Are you ready to prove yourself? Let's go! 🚀🎯</p>
+        <button id="startBtn">Start Quiz</button>
+    </div>
+    <div id="quiz">
+        <h3 id="progress">Question 1/5</h3>
+        <h2 id="question"></h2>
+        <div id="options"></div>
+        <button id="next">Next</button>
+    </div>
+    <div id="result"></div>
+
+
+
+    <script>
+        const quizData = [
+            { question: "What does HTML stand for?", options: ["Hyper Text Markup Language", "High Text Machine Language", "Hyperlink and Text Markup Language", "Home Tool Markup Language"], answer: "Hyper Text Markup Language" },
+            { question: "Which HTML tag is used to define an internal stylesheet?", options: ["<style>", "<css>", "<script>", "<link>"], answer: "<style>" },
+            { question: "Which property is used to change the background color in CSS?", options: ["color", "background-color", "bgcolor", "background"], answer: "background-color" },
+            { question: "Which CSS property is used to make text bold?", options: ["font-weight", "text-style", "bold", "font-bold"], answer: "font-weight" },
+            { question: "Which of the following is used to add JavaScript to an HTML document?", options: ["<js>", "<javascript>", "<script>", "<code>"], answer: "<script>" },
+            { question: "How do you declare a JavaScript variable?", options: ["var myVar", "v myVar", "variable myVar", "let = myVar"], answer: "var myVar" },
+            { question: "Which function is used to print something in the console?", options: ["console.log()", "print()", "log.console()", "display()"], answer: "console.log()" },
+            { question: "Which event occurs when the user clicks on an HTML element?", options: ["onmouseclick", "onmouseover", "onchange", "onclick"], answer: "onclick" },
+            { question: "Which method can be used to find an HTML element by ID in JavaScript?", options: ["getElementById()", "querySelector()", "getElement()", "findElementById()"], answer: "getElementById()" },
+            { question: "What is the correct way to write an array in JavaScript?", options: ["var colors = (1:'red', 2:'blue', 3:'green')", "var colors = ['red', 'blue', 'green']", "var colors = 'red', 'blue', 'green'", "var colors = {1:'red', 2:'blue', 3:'green'}"], answer: "var colors = ['red', 'blue', 'green']" }
+        ];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        
+        document.body.style.display = "flex";
+        document.body.style.justifyContent = "center";
+        document.body.style.alignItems = "center";
+        document.body.style.height = "100vh";
+        document.body.style.flexDirection = "column";
+        
+        document.getElementById("startBtn").addEventListener("click", function() {
+            document.getElementById("welcome").style.display = "none";
+            document.getElementById("quiz").style.display = "flex";
+            document.getElementById("quiz").style.flexDirection = "column";
+            document.getElementById("quiz").style.alignItems = "center";
+            loadQuiz();
+        });
+        
+        function loadQuiz() {
+            const questionData = quizData[currentQuestionIndex];
+            document.getElementById("question").innerText = questionData.question;
+            document.getElementById("progress").innerText = `Question ${currentQuestionIndex + 1}/${quizData.length}`;
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = "";
+            questionData.options.forEach(option => {
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.classList.add("option");
+                button.addEventListener("click", () => checkAnswer(option));
+                optionsContainer.appendChild(button);
+            });
+        }
+        
+        function checkAnswer(selectedOption) {
+            const questionData = quizData[currentQuestionIndex];
+            if (selectedOption === questionData.answer) {
+                score++;
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuiz();
+            } else {
+                showResult();
+            }
+        }
+        
+        function showResult() {
+            document.getElementById("quiz").style.display = "none";
+            const resultContainer = document.createElement("div");
+            resultContainer.innerHTML = `
+                <h2 class='celebration'>🎉 Congratulations! 🎉</h2>
+                <p>You completed the quiz!</p>
+                <p>Your score: <strong>${score}/${quizData.length}</strong></p>
+                <p class='confetti'>🎊🥳✨</p>
+            `;
+            resultContainer.style.textAlign = "center";
+            resultContainer.style.padding = "20px";
+            resultContainer.style.borderRadius = "10px";
+            resultContainer.style.background = "rgba(255, 255, 255, 0.2)";
+            resultContainer.style.backdropFilter = "blur(10px)";
+            resultContainer.style.boxShadow = "2px 2px 12px rgba(0,0,0,0.2)";
+            document.body.appendChild(resultContainer);
+        }
+    </script>
+    
